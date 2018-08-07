@@ -28,7 +28,7 @@ void Vec2::setY(float y)
 	this->y = y;
 }
 
-float Vec2::length()
+float Vec2::length() const
 {
 	return sqrtf(x * x + y * y);
 }

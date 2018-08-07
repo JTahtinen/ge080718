@@ -1,6 +1,8 @@
 #include "map.h"
 #include "testdata.h"
 #include "globals.h"
+#include "door.h"
+#include "worldObject.h"
 
 #define WATER 0xffff0000
 #define GRASS 0xff00ff00
@@ -9,10 +11,11 @@ Map::Map(int width, int height)
 	: _width(width)
 	, _height(height)
 {
-	_tiles.reserve(width * height);
-	for (unsigned int i = 0; i < _tiles.capacity(); ++i)
+	_sectors.reserve(width * height);
+	for (unsigned int i = 0; i < _sectors.capacity(); ++i)
 	{
-		_tiles.push_back(TestData::instance().nullTile);
+		_sectors.push_back(Sector());
+		_sectors[i].tile = TestData::instance().nullTile;
 	}
 }
 
@@ -22,9 +25,9 @@ Map::~Map()
 
 void Map::setTile(int x, int y, const Tile* tile)
 {
-	if (tile && x > -1 && y > -1 && x < _width && y < _height)
+	if (inBounds(x, y))
 	{
-		_tiles[x + y * _width] = tile;
+		_sectors[x + y * _width].tile = tile;
 	}
 }
 
@@ -78,30 +81,54 @@ void Map::render(GraphicsComponent* target, const Camera* camera) const
 	{
 		for (int x = xStart; x < xEnd; ++x)
 		{
-			int xStart = x * Tile::SIZE;
-			int yStart = y * Tile::SIZE;
-			int xEnd = xStart + Tile::SIZE;
-			int yEnd = yStart + Tile::SIZE;
-
-			_tiles[x + y * _width]->render(xStart, yStart, xEnd, yEnd, (int)camCorr.x, (int)camCorr.y, target);
+			
+			renderSector(x, y, (int)camCorr.x, (int)camCorr.y, target);
+			//_tiles[x + y * _width]->render(xStart, yStart, xEnd, yEnd, (int)camCorr.x, (int)camCorr.y, target);
 		}
+	}
+}
+
+void Map::renderSector(int x, int y, int xOffset, int yOffset, GraphicsComponent* target) const
+{
+	int xStart = x * Tile::SIZE;
+	int yStart = y * Tile::SIZE;
+	int xEnd = xStart + Tile::SIZE;
+	int yEnd = yStart + Tile::SIZE;
+	const Sector* sector = &_sectors[x + y * _width];
+	if (!sector->entities.empty())
+	{
+		sector->entities.back()->render(xStart, yStart, xEnd, yEnd, xOffset, yOffset, target);
+	}
+	else
+	{
+		sector->tile->render(xStart, yStart, xEnd, yEnd, xOffset, yOffset, target);
 	}
 }
 
 const Tile* Map::getTile(int x, int y) const
 {
-	if (x > -1 && x < _width && y > -1 && y < _height)
-	{
-		return _tiles[x + y * _width];
-	}
-	return TestData::instance().nullTile;
+	return (getSector(x, y)->tile);
 }
 
 const Tile* Map::getTileAtAbsPos(float x, float y) const
 {
+	return (getSectorAtAbsPos(x, y)->tile);
+}
+
+const Sector* Map::getSector(int x, int y) const
+{
+	if (inBounds(x, y))
+	{
+		return &_sectors[x + y * _width];
+	}
+	return nullptr;
+}
+
+const Sector* Map::getSectorAtAbsPos(float x, float y) const
+{
 	int xIndex = (int)(x / Tile::SIZE);
 	int yIndex = (int)(y / Tile::SIZE);
-	return getTile(xIndex, yIndex);
+	return getSector(xIndex, yIndex);
 }
 
 Map* Map::loadMap(const std::string& filepath)
@@ -137,6 +164,7 @@ Map* Map::loadMap(const std::string& filepath)
 			map->setTile(x, y, tile);
 		}
 	}
+	map->addFixedEntity(14, 7, new Door(TestData::instance().waterMat));
 	delete mapImage;
 	return map;
 }
@@ -146,12 +174,11 @@ Map* Map::createTestMap()
 	int width = 40;
 	int height = 40;
 	Map* map = new Map(width, height);
-
 	for (int y = 0; y < height; ++y)
 	{
 		for (int x = 0; x < width; ++x)
 		{
-			map->_tiles.push_back(TestData::instance().grassTile);
+			map->_sectors[x + y * width].tile = TestData::instance().grassTile;
 		}
 	}
 
@@ -183,4 +210,111 @@ int Map::getAbsWidth() const
 int Map::getAbsHeight() const
 {
 	return _height * Tile::SIZE;
+}
+
+void Map::activateSector(int x, int y)
+{
+	if (inBounds(x, y))
+	{
+		std::vector<FixedEntity*>& entities = _sectors[x + y * _width].entities;
+		if (!entities.empty())
+		{
+			_sectors[x + y * _width].entities.back()->use();
+		}
+	}
+}
+
+void Map::activateSectorAtAbsPos(float x, float y)
+{
+	int xIndex = (int)(x / Tile::SIZE);
+	int yIndex = (int)(y / Tile::SIZE);
+	activateSector(xIndex, yIndex);
+}
+
+void Map::addFixedEntity(int x, int y, FixedEntity* entity)
+{
+	if (entity)
+	{
+		if (inBounds(x, y))
+		{
+			_sectors[x + y * _width].entities.push_back(entity);
+		}
+		else {
+			Log::err("Removed fixed entity - Out of bounds!");
+			delete entity;
+		}
+	}
+}
+
+std::vector<Rect> Map::getSurroundingColliders(float x, float y) const
+{
+	std::vector<Rect> rects;
+	rects.reserve(8);
+
+	const Sector* topLeft = getSectorAtAbsPos(x - 32, y - 32);
+	const Sector* topUp = getSectorAtAbsPos(x, y - 32);
+	const Sector* topRight = getSectorAtAbsPos(x + 32, y - 32);
+	const Sector* midLeft = getSectorAtAbsPos(x - 32, y);
+	const Sector* midRight = getSectorAtAbsPos(x + 32, y);
+	const Sector* bottomLeft = getSectorAtAbsPos(x - 32, y + 32);
+	const Sector* bottomDown = getSectorAtAbsPos(x, y + 32);
+	const Sector* bottomRight = getSectorAtAbsPos(x + 32, y + 32);
+
+	if (sectorHasBarrier(topLeft))			rects.emplace_back(getTilePosOf(x - 32, y - 32));
+	if (sectorHasBarrier(topUp))			rects.emplace_back(getTilePosOf(x, y - 32));
+	if (sectorHasBarrier(topRight))			rects.emplace_back(getTilePosOf(x + 32, y - 32));
+	if (sectorHasBarrier(midLeft))			rects.emplace_back(getTilePosOf(x - 32, y));
+	if (sectorHasBarrier(midRight))			rects.emplace_back(getTilePosOf(x + 32, y));
+	if (sectorHasBarrier(bottomLeft))		rects.emplace_back(getTilePosOf(x - 32, y + 32));
+	if (sectorHasBarrier(bottomDown))		rects.emplace_back(getTilePosOf(x, y + 32));
+	if (sectorHasBarrier(bottomRight))		rects.emplace_back(getTilePosOf(x + 32, y + 32));
+	
+	return rects;
+}
+
+bool Map::inBounds(int x, int y) const
+{
+	return (math::inBounds((float)x, (float)y, 0, 0, (float)_width, (float)_height));
+}
+
+Rect Map::getTilePosOf(float x, float y) const
+{
+	int tileX = (int)x / Tile::SIZE * Tile::SIZE - Tile::SIZE / 2; 
+	int tileY = (int)y / Tile::SIZE * Tile::SIZE - Tile::SIZE / 2;
+	
+	return Rect((float)tileX, (float)tileY, (float)tileX + Tile::SIZE, (float)tileY + Tile::SIZE);
+}
+
+bool Map::sectorHasBarrier(const Sector* sector) const
+{
+	if (sector)
+	{
+		if (sector->tile->hasBarrier())
+		{
+			return true;
+		}
+		for (unsigned int i = 0; i < sector->entities.size(); ++i)
+		{
+			if (sector->entities[i]->hasBarrier())
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+FixedEntity* Map::getEntityFromAbsPos(float x, float y)
+{
+	int xIndex = (int)x / Tile::SIZE;
+	int yIndex = (int)y / Tile::SIZE;
+	if (inBounds(xIndex, yIndex))
+	{
+		Sector* sector = &_sectors[xIndex + yIndex * _width];
+		if (sector->entities.size() > 0)
+		{
+			return sector->entities.back();
+		}
+	}
+	return nullptr;
 }

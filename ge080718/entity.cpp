@@ -36,3 +36,8 @@ unsigned int Entity::getId() const
 {
 	return _id;
 }
+
+bool Entity::isMoving() const
+{
+	return _vel.length() > 0.0f;
+}

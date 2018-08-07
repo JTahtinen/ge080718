@@ -23,5 +23,10 @@ const Material* Tile::getMaterial() const
 	return _material;
 }
 
+bool Tile::hasBarrier() const
+{
+	return _barrier;
+}
+
 
 

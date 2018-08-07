@@ -17,4 +17,5 @@ public:
 	void setTarget(const WorldObject* target);
 	virtual void update() override;
 	Vec2 getCameraCorrection() const;
+	Vec2 translate(const Vec2& pos) const;
 };

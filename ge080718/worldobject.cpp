@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "subject.h"
 #include "rect.h"
+#include "map.h"
 
 WorldObject::WorldObject(float x, float y, const Material* sprite)
 	: Entity(x, y)
@@ -23,17 +24,17 @@ WorldObject::WorldObject(const Material* sprite)
 }
 
 
-void WorldObject::update(const Game* game)
+void WorldObject::update(Game* game)
 {
 	const GameData& gameData = game->getGameData();
 	const Map* map = gameData.map;
-	setWalkMaterial(map->getTileAtAbsPos(_pos.x, _pos.y)->getMaterial());
+	setWalkMaterial(map->getTileAtAbsPos(_pos.x + 16, _pos.y + 16)->getMaterial());
 	
 	if (_walkMaterial)
 	{
 		_vel = Physics::instance().calcFriction(_walkMaterial->friction, _vel);
 	}
-	
+	collisionCheck(map);
 	std::vector<Actor*> actors = gameData.actors;
 	for (unsigned int i = 0; i < actors.size(); ++i)
 	{
@@ -42,7 +43,7 @@ void WorldObject::update(const Game* game)
 		
 		if (collisionCheck(*actor))
 		{
-			Log::msg("Collision!");
+			//Log::msg("Collision!");
 		}
 	}
 	_pos += _vel;
@@ -70,42 +71,67 @@ const Vec2& WorldObject::getPos() const
 	return _pos;
 }
 
-bool WorldObject::collisionCheck(const Entity& other)
+bool WorldObject::collisionCheck(const Rect& collider)
 {
-	const Vec2& otherPos = other.getPos();
-	
-	Rect myCollider = 
+	Rect myCollider =
 		Rect(_pos.x - 15.0f, _pos.y - 15.0f,
 			_pos.x + 15.0f, _pos.y + 15.0f);
 	
-	Rect otherCollider =
-		Rect(otherPos.x - 16.0f, otherPos.y - 16.0f, 
-			otherPos.x + 16.0f, otherPos.y + 16.0f);
-	
-	Collision collision = Physics::instance().collision(myCollider, _vel, otherCollider);
+	Collision collision = Physics::instance().collision(myCollider, _vel, collider);
 
 	if (collision.xCollision)
 	{
-		if (_vel.x > 0)
-		{
-			_vel.setX(otherCollider.x1 - myCollider.x2 - 1);
-		}
-		else if (_vel.x < 0) {
-			_vel.setX(otherCollider.x2 - myCollider.x1 + 1);
-		}
+		//if (!collision.yCollision)
+	//	{
+			if (_vel.x > 0)
+			{
+				_vel.setX(collider.x1 - myCollider.x2 - 1);
+			}
+			else if (_vel.x < 0) {
+				_vel.setX(collider.x2 - myCollider.x1 + 1);
+			}
+	//	}
 	}
 	if (collision.yCollision)
 	{
 		if (_vel.y > 0)
 		{
-			_vel.setY(otherCollider.y1 - myCollider.y2 - 1);
+			_vel.setY(collider.y1 - myCollider.y2 - 1);
 		}
 		else if (_vel.y < 0) {
-			_vel.setY(otherCollider.y2 - myCollider.y1 + 1);
+			_vel.setY(collider.y2 - myCollider.y1 + 1);
 		}
 	}
-	
+
 	return (collision.xCollision || collision.yCollision);
+
+}
+
+bool WorldObject::collisionCheck(const Entity& other)
+{
+	const Vec2& otherPos = other.getPos();
+	
+	Rect otherCollider =
+		Rect(otherPos.x - 16.0f, otherPos.y - 16.0f, 
+			otherPos.x + 16.0f, otherPos.y + 16.0f);
+		
+	return (collisionCheck(otherCollider));
+}
+
+bool WorldObject::collisionCheck(const Map* map)
+{
+	if (!this->isMoving()) return false;
+	bool collided = false;
+	Vec2 nextPos = _pos + _vel;
+	const std::vector<Rect> colliders = map->getSurroundingColliders(_pos.x, _pos.y);
+	for (unsigned int i = 0; i < colliders.size(); ++i)
+	{
+		if (collisionCheck(colliders[i]))
+		{
+			collided = true;
+		}
+	}
+	return collided;
 }
 
 

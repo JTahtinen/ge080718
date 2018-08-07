@@ -18,7 +18,7 @@ Actor::Actor()
 {
 }
 
-void Actor::update(const Game* game)
+void Actor::update(Game* game)
 {
 	if (_ai)
 	{

@@ -4,10 +4,19 @@
 #include "vec2.h"
 #include "camera.h"
 #include "light.h"
+#include "fixedentity.h"
 #include "graphicscomponent.h"
+#include "rect.h"
+
+struct Sector
+{
+	const Tile*					tile;
+	std::vector<FixedEntity*>	entities;
+};
+
 class Map 
 {
-	std::vector<const Tile*>	_tiles;
+	std::vector<Sector>			_sectors;
 	int							_width;
 	int							_height;
 public:
@@ -16,12 +25,23 @@ public:
 	void render(GraphicsComponent* target, const Camera* camera) const;
 	const Tile* getTile(int x, int y) const;
 	const Tile* getTileAtAbsPos(float x, float y) const; 
+	const Sector* getSector(int x, int y) const;
+	const Sector* getSectorAtAbsPos(float x, float y) const;
 	static Map* loadMap(const std::string& filepath);
 	static Map* createTestMap();
 	int getWidthInTiles() const;
 	int getHeightInTiles() const;
 	int getAbsWidth() const;
 	int getAbsHeight() const;
+	void activateSector(int x, int y);
+	void activateSectorAtAbsPos(float x, float y);
+	std::vector<Rect> getSurroundingColliders(float x, float y) const;
+	FixedEntity* getEntityFromAbsPos(float x, float y);
 private:
+	Rect getTilePosOf(float x, float y) const;
 	Map(int width, int height);
+	void addFixedEntity(int x, int y, FixedEntity* entity);
+	void renderSector(int x, int y, int xOffset, int yOffset, GraphicsComponent* target) const;
+	bool inBounds(int x, int y) const;
+	bool sectorHasBarrier(const Sector* sector) const;
 };

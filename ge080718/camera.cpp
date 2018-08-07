@@ -43,3 +43,8 @@ Vec2 Camera::getCameraCorrection() const
 {
 	return Vec2(_view->getWidth() / 2.0f - _pos.x, _view->getHeight() / 2.0f - _pos.y);
 }
+
+Vec2 Camera::translate(const Vec2& pos) const
+{
+	return pos + getCameraCorrection();
+}

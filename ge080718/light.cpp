@@ -61,7 +61,7 @@ void Light::render(float* buffer, int bufferWidth, int bufferHeight, const Vec2&
 		for (int x = 0; x < bufferWidth; ++x)
 		{
 			pos.set(bufferPos.x + x, bufferPos.y + y);
-			float distanceFromLight = distance(_pos, pos);
+			float distanceFromLight = math::distance(_pos, pos);
 			if (distanceFromLight > _radius) continue;
 			//float modifier = (_intensity / (PI * (rSquared)) * (_radius - distanceFromLight) * _radius);
 			buffer[x + y * bufferWidth] += getModifier(distanceFromLight);
@@ -77,7 +77,7 @@ float Light::getIntensityAtDistance(float distance) const
 
 bool Light::isInRadiusOf(const Vec2& pos) const
 {
-	return (distance(_pos, pos) < _radius);
+	return (math::distance(_pos, pos) < _radius);
 }
 
 void Light::loadAssets()

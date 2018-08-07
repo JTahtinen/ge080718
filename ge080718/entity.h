@@ -21,4 +21,5 @@ public:
 	const Vec2& getPos() const;
 	const Vec2& getVel() const;
 	unsigned int getId() const;
+	bool isMoving() const;
 };

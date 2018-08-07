@@ -8,7 +8,7 @@ Game::Game(const Window* win)
 {
 	Light::loadAssets();
 	GraphicsPool* surfaces = TestData::instance().surfaces;
-	Player* player = new Player(200.0f, 40.0f, TestData::instance().dudeMat);
+	Player* player = new Player(32.0f, 32.0f, TestData::instance().dudeMat);
 	_gameData.setPlayer(player);
 	//_gameData.setMap(Map::createDefaultMap());
 	_gameData.setMap(Map::loadMap("map.png"));
@@ -20,8 +20,8 @@ Game::Game(const Window* win)
 	_subject.addObserver(_gameView);
 	std::vector<Actor*>& actors = _gameData.actors;
 	actors[3]->setAI(&AI::defaultAI(this));
-	actors[3]->addHostile(player);
-	actors[3]->addHostile(actors[6]);
+	//actors[3]->addHostile(player);
+	//actors[3]->addHostile(actors[6]);
 	addEntity(player);
 }
 
@@ -37,7 +37,8 @@ void Game::handleInput()
 	Input& input = Input::instance();
 	if (input.poll(SDLK_a, KEY_TYPED))
 	{
-		const Vec2& pos = _gameData.player->getPos();
+		Vec2 pos = _gameData.player->getPos();
+		pos.add(16, 16);
 		addLight(new Light(pos));
 	}
 	if (input.poll(SDLK_s, KEY_TYPED))

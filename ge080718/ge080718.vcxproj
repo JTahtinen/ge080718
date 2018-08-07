@@ -132,6 +132,8 @@
     <ClCompile Include="actorstate.cpp" />
     <ClCompile Include="ai.cpp" />
     <ClCompile Include="application.cpp" />
+    <ClCompile Include="door.cpp" />
+    <ClCompile Include="fixedentity.cpp" />
     <ClCompile Include="glgraphicscomponent.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="glrenderer.cpp" />
@@ -174,6 +176,8 @@
     <ClInclude Include="actorstate.h" />
     <ClInclude Include="ai.h" />
     <ClInclude Include="application.h" />
+    <ClInclude Include="door.h" />
+    <ClInclude Include="fixedentity.h" />
     <ClInclude Include="glgraphicscomponent.h" />
     <ClInclude Include="glrenderer.h" />
     <ClInclude Include="glwindow.h" />
@@ -211,6 +215,7 @@
     <ClInclude Include="tile.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="uicomponent.h" />
+    <ClInclude Include="usable.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="vec2.h" />
     <ClInclude Include="window.h" />

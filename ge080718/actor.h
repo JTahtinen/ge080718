@@ -15,7 +15,7 @@ public:
 	Actor(float x, float y, const Material* sprite);
 	Actor(const Vec2& pos);
 	Actor();
-	virtual void update(const Game* game) override;
+	virtual void update(Game* game) override;
 	void move(const Vec2& dir, float speed);
 	void setAI(AI* ai);
 	void addHostile(const Actor* actor);

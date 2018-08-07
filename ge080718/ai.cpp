@@ -28,7 +28,7 @@ void AI::update(Actor* actor) const
 				float dist;
 				for (unsigned int i = 0; i < numHostiles; ++i)
 				{
-					float nextDist = distance(pos, hostiles[i]->getPos());
+					float nextDist = math::distance(pos, hostiles[i]->getPos());
 					if (nextDist > 40.0f)
 					{
 						if (!suitableHostiles)
@@ -76,7 +76,7 @@ void AI::attack(Actor* actor, const Entity* target) const
 
 	Vec2 dir = -(pos - targetPos);
 	actor->move(dir, 2.0f);
-	if (distance(pos, targetPos) < 100.0f)
+	if (math::distance(pos, targetPos) < 100.0f)
 	{
 		actor->_state.setTask(NO_TASK);
 	}

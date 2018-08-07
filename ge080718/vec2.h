@@ -10,7 +10,7 @@ struct Vec2
 	void set(float x, float y);
 	void setX(float x);
 	void setY(float y);
-	float length();
+	float length() const;
 	Vec2& normalize();
 	Vec2 getNormal() const;
 	Vec2& add(const Vec2& other);
