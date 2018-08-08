@@ -134,7 +134,6 @@ bool WorldObject::collisionCheck(const Map* map)
 	return collided;
 }
 
-
 void WorldObject::setWalkMaterial(const Material* material)
 {
 	_walkMaterial = material;

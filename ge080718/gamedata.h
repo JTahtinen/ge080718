@@ -4,6 +4,7 @@
 #include "actor.h"
 #include "player.h"
 #include "light.h"
+#include "npc.h"
 
 struct GameData
 {
@@ -12,6 +13,7 @@ struct GameData
 	std::vector<Entity*>		entities;
 	std::vector<WorldObject*>	worldObjects;
 	std::vector<Actor*>			actors;
+	std::vector<NPC*>			npcs;
 	std::vector<Light*>			lights;
 	Player*						player;
 
@@ -21,6 +23,7 @@ public:
 	void setMap(Map* map);
 	void addEntity(Entity* entity);
 	void addWorldObject(WorldObject* worldObject);
+	void addNPC(NPC* npc);
 	void addActor(Actor* actor);
 	void addLight(Light* light);
 	void setPlayer(Player* player);

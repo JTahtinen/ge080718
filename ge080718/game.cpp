@@ -2,6 +2,7 @@
 #include "testdata.h"
 #include "input.h"
 #include "globals.h"
+#include "ai.h"
 
 Game::Game(const Window* win)
 	: State(win)
@@ -15,13 +16,9 @@ Game::Game(const Window* win)
 	_gameView = new GameView(-0.8f, -0.8f, 0.8f, 0.8f, 400, 300, _gameData);
 	for (unsigned int i = 0; i < 10; ++i)
 	{
-		addActor(new Actor(40.0f + i * 40.0f, 40.0f + i * 40.0f, TestData::instance().dudeMat));
+		addNPC(new NPC(40.0f + i * 40.0f, 40.0f + i * 40.0f, TestData::instance().dudeMat));
 	}
 	_subject.addObserver(_gameView);
-	std::vector<Actor*>& actors = _gameData.actors;
-	actors[3]->setAI(&AI::defaultAI(this));
-	//actors[3]->addHostile(player);
-	//actors[3]->addHostile(actors[6]);
 	addEntity(player);
 }
 
@@ -44,10 +41,10 @@ void Game::handleInput()
 	if (input.poll(SDLK_s, KEY_TYPED))
 	{
 		const Vec2& pos = _gameData.player->getPos();
-		Actor* actor = new Actor(pos + Vec2(34, 34)); 
-		actor->setAI(&AI::defaultAI(this));
-		actor->addHostile(_gameData.player);
-		addActor(actor);
+		NPC* npc = new NPC(pos + Vec2(34, 34)); 
+		npc->setAI(&AI::defaultAI(this));
+		npc->addHostile(_gameData.player);
+		addNPC(npc);
 	}
 }
 
@@ -65,12 +62,12 @@ void Game::addLight(Light* light)
 
 }
 
-void Game::addActor(Actor* actor)
+void Game::addNPC(NPC* npc)
 {
-	_gameData.addActor(actor);
-	addEntity(actor);
-	_subject.notify(actor, ENTITY_ADDED);
-	Log::msg("Actor added!");
+	_gameData.addNPC(npc);
+	addEntity(npc);
+	_subject.notify(npc, ENTITY_ADDED);
+	Log::msg("NPC added!");
 }
 
 void Game::update(Window* win)

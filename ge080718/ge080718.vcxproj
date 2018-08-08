@@ -129,7 +129,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="actor.cpp" />
-    <ClCompile Include="actorstate.cpp" />
     <ClCompile Include="ai.cpp" />
     <ClCompile Include="application.cpp" />
     <ClCompile Include="door.cpp" />
@@ -140,6 +139,7 @@
     <ClCompile Include="glwindow.cpp" />
     <ClCompile Include="graphicscomponent.cpp" />
     <ClCompile Include="menu.cpp" />
+    <ClCompile Include="npc.cpp" />
     <ClCompile Include="rect.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="entity.cpp" />
@@ -174,7 +174,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.h" />
-    <ClInclude Include="actorstate.h" />
     <ClInclude Include="ai.h" />
     <ClInclude Include="application.h" />
     <ClInclude Include="door.h" />
@@ -184,6 +183,7 @@
     <ClInclude Include="glwindow.h" />
     <ClInclude Include="graphicscomponent.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="npc.h" />
     <ClInclude Include="rect.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="component.h" />

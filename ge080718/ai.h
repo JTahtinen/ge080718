@@ -2,7 +2,7 @@
 #include <vector>
 
 class Game;
-class Actor;
+class NPC;
 class Entity;
 
 enum AI_Stance
@@ -14,11 +14,11 @@ class AI
 {
 	const Game*					_game;
 public:
-	void update(Actor* actor) const;
+	void update(NPC* npc) const;
 private:
 	AI(const Game* game);
-	void act(Actor* actor) const;
-	void attack(Actor* actor, const Entity* target) const;
+	void act(NPC* actor) const;
+	void attack(NPC* actor, const Entity* target) const;
 public:
 	inline static AI& defaultAI(const Game* game)
 	{

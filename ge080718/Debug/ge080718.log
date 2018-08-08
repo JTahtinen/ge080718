@@ -1,2 +1,18 @@
-﻿  player.cpp
+﻿  actor.cpp
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  worldobject.cpp
+  usable.cpp
+  player.cpp
+  npc.cpp
+  map.cpp
+  main.cpp
+  gameview.cpp
+  gamedata.cpp
+  game.cpp
+  fixedentity.cpp
+  door.cpp
+  camera.cpp
+  application.cpp
+  ai.cpp
   ge080718.vcxproj -> C:\Users\Jaakko\source\repos\ge080718\Debug\ge080718.exe

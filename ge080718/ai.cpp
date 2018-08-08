@@ -1,7 +1,7 @@
 #include "ai.h"
 #include "math.h"
 #include "entity.h"
-#include "actor.h"
+#include "npc.h"
 #include "game.h"
 
 AI::AI(const Game* game)
@@ -9,9 +9,9 @@ AI::AI(const Game* game)
 {
 }
 
-void AI::update(Actor* actor) const
+void AI::update(NPC* npc) const
 {
-	ActorState& state = actor->_state;
+	NPCState& state = npc->_state;
 	if (!state.taskInProgress())
 	{
 		switch (state.mood)
@@ -24,7 +24,7 @@ void AI::update(Actor* actor) const
 			if (numHostiles > 0)
 			{
 				bool suitableHostiles = false;
-				const Vec2& pos = actor->getPos();
+				const Vec2& pos = npc->getPos();
 				float dist;
 				for (unsigned int i = 0; i < numHostiles; ++i)
 				{
@@ -53,31 +53,31 @@ void AI::update(Actor* actor) const
 	}
 	else
 	{
-		act(actor);
+		act(npc);
 	}
 }
 
-void AI::act(Actor* actor) const
+void AI::act(NPC* npc) const
 {
-	switch(actor->_state.task)
+	switch(npc->_state.task)
 	{
 	case ATTACK:
-		attack(actor, actor->_state.target);
+		attack(npc, npc->_state.target);
 		break;
 	default:
 		break;
 	}
 }
 
-void AI::attack(Actor* actor, const Entity* target) const
+void AI::attack(NPC* npc, const Entity* target) const
 {
-	const Vec2& pos = actor->getPos();
+	const Vec2& pos = npc->getPos();
 	const Vec2& targetPos = target->getPos();
 
 	Vec2 dir = -(pos - targetPos);
-	actor->move(dir, 2.0f);
+	npc->move(dir, 2.0f);
 	if (math::distance(pos, targetPos) < 100.0f)
 	{
-		actor->_state.setTask(NO_TASK);
+		npc->_state.setTask(NO_TASK);
 	}
 }

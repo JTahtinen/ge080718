@@ -10,6 +10,7 @@ GameData::GameData()
 	lights.reserve(50);
 	actors.reserve(50);
 	worldObjects.reserve(50);
+	npcs.reserve(50);
 }
 
 GameData::~GameData()
@@ -70,6 +71,12 @@ void GameData::addWorldObject(WorldObject* worldObject)
 {
 	add(worldObject, worldObjects);
 	addEntity(worldObject);
+}
+
+void GameData::addNPC(NPC* npc)
+{
+	add(npc, npcs);
+	addActor(npc);
 }
 
 void GameData::addActor(Actor* actor)

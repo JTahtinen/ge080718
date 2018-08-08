@@ -3,6 +3,7 @@
 #include "gameview.h"
 #include "player.h"
 #include "actor.h"
+#include "npc.h"
 #include "subject.h"
 #include <vector>
 
@@ -16,7 +17,7 @@ public:
 	~Game();
 	void handleInput();
 	void addLight(Light* light);
-	void addActor(Actor* actor);
+	void addNPC(NPC* npc);
 	virtual void update(Window* win) override;
 	const GameData& getGameData() const;
 private:
