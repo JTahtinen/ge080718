@@ -9,6 +9,12 @@ enum RendererType
 	SOFTWARE, OPENGL
 };
 
+enum Effects
+{
+	NO_EFFECTS	= 0,
+	HIGHLIGHT	= 1 << 0,
+};
+
 class Renderer
 {
 protected:
@@ -19,6 +25,8 @@ protected:
 public:
 	Renderer();
 	void renderSurface(const Surface* source, const Rect& dimensions, Surface *target) const;
+	virtual void renderMaterial(const Material* material, const Rect& dimensions,
+		int xOffset, int yOffset, GraphicsComponent *target, Effects effects) const = 0;
 	virtual void renderMaterial(const Material* material, const Rect& dimensions,
 		int xOffset, int yOffset, GraphicsComponent *target) const = 0;
 	/*inline static Renderer& instance()

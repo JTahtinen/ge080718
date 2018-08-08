@@ -1,18 +1,19 @@
 #include "door.h"
 #include "log.h"
+#include "globals.h"
+#include "testdata.h"
 
-Door::Door(const Material* material, bool open)
-	: FixedEntity(material, !open)
-{
-
-}
-
-Door::Door(const Material* material)
-	: Door(material, false)
+Door::Door(float x, float y, const Material* material, bool open)
+	: FixedEntity(x, y, material, !open)
 {
 }
 
-void Door::use()
+Door::Door(float x, float y, const Material* material)
+	: Door(x, y, material, false)
+{
+}
+
+void Door::use(Actor* actor)
 {
 	setBarrier(!_barrier);
 	if (this->isOpen())
@@ -24,12 +25,8 @@ void Door::use()
 	}
 }
 
-void Door::target()
-{
-	Log::msg("Door targeted!");
-}
-
 bool Door::isOpen() const
 {
 	return !this->hasBarrier();
 }
+

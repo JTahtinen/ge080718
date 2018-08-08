@@ -1,8 +1,12 @@
 #pragma once
+#include "actor.h"
 
 class Usable
 {
+protected:
+	bool			_isTargeted;
 public:
-	virtual void target() = 0;
-	virtual void use() = 0;
+	Usable();
+	virtual void target(bool value);
+	virtual void use(Actor* actor) = 0;
 };

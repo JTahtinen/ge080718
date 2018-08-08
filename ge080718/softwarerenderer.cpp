@@ -3,19 +3,20 @@
 #include "graphics.h"
 #include "SoftwareWindow.h"
 #include "swgraphicscomponent.h"
+#include "sfx.h"
 
 SoftwareRenderer::SoftwareRenderer()
 {
 }
 
 void SoftwareRenderer::renderMaterial(const Material* material, const Rect& dimensions,
-	int xOffset, int yOffset, GraphicsComponent *target) const
+	int xOffset, int yOffset, GraphicsComponent *target, Effects effects) const
 {
 	if (dimensions.x2 <= dimensions.x1 || dimensions.y2 <= dimensions.y1)
 	{
 		return;
 	}
-
+	
 	int width = (int)(dimensions.x2 - dimensions.x1);
 	int height = (int)(dimensions.y2 - dimensions.y1);
 	SWGraphicsComponent* finalSurface = new SWGraphicsComponent(width, height);
@@ -44,10 +45,23 @@ void SoftwareRenderer::renderMaterial(const Material* material, const Rect& dime
 	const Graphics& g = Graphics::instance();
 	Surface* fSurface = (Surface*)finalSurface->getGraphics();
 	g.modifySurface(fSurface, lightBuffer);
+
+	
+
+	if (effects & HIGHLIGHT)
+	{
+		sfx::highlight(fSurface);
+	}
 	target->render(finalSurface, (int)(dimensions.x1 + xOffset), (int)(dimensions.y1 + yOffset), (int)(dimensions.x2 + xOffset), (int)(dimensions.y2 + yOffset));
 	delete finalSurface;
 	delete[] lightBuffer;
 
+}
+
+void SoftwareRenderer::renderMaterial(const Material* material, const Rect& dimensions,
+	int xOffset, int yOffset, GraphicsComponent *target) const
+{
+	renderMaterial(material, dimensions, xOffset, yOffset, target, NO_EFFECTS);
 }
 
 

@@ -8,6 +8,11 @@
 #include "graphicscomponent.h"
 #include "rect.h"
 
+enum FixedEntityType
+{
+	DOOR
+};
+
 struct Sector
 {
 	const Tile*					tile;
@@ -33,14 +38,13 @@ public:
 	int getHeightInTiles() const;
 	int getAbsWidth() const;
 	int getAbsHeight() const;
-	void activateSector(int x, int y);
-	void activateSectorAtAbsPos(float x, float y);
 	std::vector<Rect> getSurroundingColliders(float x, float y) const;
 	FixedEntity* getEntityFromAbsPos(float x, float y);
+	std::vector<FixedEntity*> getEntitiesFromArea(const Vec2& pos, int radius);
 private:
 	Rect getTilePosOf(float x, float y) const;
 	Map(int width, int height);
-	void addFixedEntity(int x, int y, FixedEntity* entity);
+	void addFixedEntity(int x, int y, FixedEntityType entity);
 	void renderSector(int x, int y, int xOffset, int yOffset, GraphicsComponent* target) const;
 	bool inBounds(int x, int y) const;
 	bool sectorHasBarrier(const Sector* sector) const;

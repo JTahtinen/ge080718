@@ -19,33 +19,64 @@ Player::Player()
 	: Player(0.0f, 0.0f, TestData::instance().dudeMat)
 {
 }
-
+#include <iostream>
 void Player::update(Game* game)
 {
 	static float speed = 5.0f;
 	_vel *= 0;
 	Map* map = game->getGameData().map;
-	Usable* potentialTarget = map->getEntityFromAbsPos(_pos.x + 48, _pos.y);
-	static bool lostTarget = false;
+	std::vector<FixedEntity*> entities = map->getEntitiesFromArea(_pos, 4);
+	static unsigned int entityIndex = 0;
+	static bool cycleEntityIndex = false;
 	
+
+	static Usable* potentialTarget = nullptr;
+
+	
+	if (entities.size() > 0)
+	{
+		unsigned int i = 0;
+		float distance = math::distance(_pos, entities[i]->getPos());
+		std::cout << "Distance[0]: " << distance << std::endl;
+		for (unsigned int j = 1; j < entities.size(); ++j)
+		{
+			float newDistance = math::distance(_pos, entities[j]->getPos());
+			std::cout << "distance[" << j << "]: " << newDistance << std::endl;
+			if (newDistance < distance)
+			{
+				distance = newDistance;
+				i = j;
+			}
+		}
+		entityIndex = i;
+		if (cycleEntityIndex)
+		{
+			++entityIndex;
+			if (entityIndex > entities.size() - 1)
+			{
+				entityIndex = 0;
+			}
+			cycleEntityIndex = false;
+		}
+		potentialTarget = entities[entityIndex];
+	}
+	
+
 	if (potentialTarget != _target)
 	{
+		if (_target)
+		{
+			_target->target(false);
+		}
 		_target = potentialTarget;
 		if (_target)
 		{
-			_target->target();
-		}
-		else
-		{
-			lostTarget = true;
+			_target->target(true);
 		}
 	}
+
+	if (entities.empty()) potentialTarget = nullptr;
 	
-	if (!potentialTarget && lostTarget)
-	{
-		Log::msg("Lost target");
-		lostTarget = false;
-	}
 	Input& in = Input::instance();
 	if (in.poll(SDLK_UP))
 	{
@@ -67,8 +98,12 @@ void Player::update(Game* game)
 	{
 		if (_target)
 		{
-			_target->use();
+			_target->use(this);
 		}
+	}
+	if (in.poll(SDLK_TAB, KEY_TYPED))
+	{
+		cycleEntityIndex = true;
 	}
 	Actor::update(game);
 }

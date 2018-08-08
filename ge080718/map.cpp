@@ -4,8 +4,13 @@
 #include "door.h"
 #include "worldObject.h"
 
+#define SECTORINDEX( x ) ((int)(x) / Tile::SIZE)
+#define SECTORABSPOS( x ) ((float)(x) * Tile::SIZE)
+
 #define WATER 0xffff0000
 #define GRASS 0xff00ff00
+
+
 
 Map::Map(int width, int height)
 	: _width(width)
@@ -21,6 +26,15 @@ Map::Map(int width, int height)
 
 Map::~Map()
 {
+	for (int i = 0; i < _width * _height; ++i)
+	{
+		Sector* sector = &_sectors[i];
+		for (unsigned int j = 0; j < sector->entities.size(); ++j)
+		{
+			delete sector->entities[j];
+		}
+		sector->entities.clear();
+	}
 }
 
 void Map::setTile(int x, int y, const Tile* tile)
@@ -112,7 +126,12 @@ const Tile* Map::getTile(int x, int y) const
 
 const Tile* Map::getTileAtAbsPos(float x, float y) const
 {
-	return (getSectorAtAbsPos(x, y)->tile);
+	const Sector* sector = getSectorAtAbsPos(x, y);
+	if (sector)
+	{
+		return (sector->tile);
+	}
+	return nullptr;
 }
 
 const Sector* Map::getSector(int x, int y) const
@@ -126,9 +145,7 @@ const Sector* Map::getSector(int x, int y) const
 
 const Sector* Map::getSectorAtAbsPos(float x, float y) const
 {
-	int xIndex = (int)(x / Tile::SIZE);
-	int yIndex = (int)(y / Tile::SIZE);
-	return getSector(xIndex, yIndex);
+	return getSector(SECTORINDEX(x), SECTORINDEX(y));
 }
 
 Map* Map::loadMap(const std::string& filepath)
@@ -164,7 +181,8 @@ Map* Map::loadMap(const std::string& filepath)
 			map->setTile(x, y, tile);
 		}
 	}
-	map->addFixedEntity(14, 7, new Door(TestData::instance().waterMat));
+	map->addFixedEntity(14, 7, DOOR);
+	map->addFixedEntity(17, 7, DOOR);
 	delete mapImage;
 	return map;
 }
@@ -212,38 +230,24 @@ int Map::getAbsHeight() const
 	return _height * Tile::SIZE;
 }
 
-void Map::activateSector(int x, int y)
+void Map::addFixedEntity(int x, int y, FixedEntityType entity)
 {
+
 	if (inBounds(x, y))
 	{
-		std::vector<FixedEntity*>& entities = _sectors[x + y * _width].entities;
-		if (!entities.empty())
+		FixedEntity* fEntity;
+		switch (entity)
 		{
-			_sectors[x + y * _width].entities.back()->use();
+		case DOOR:
+		default:
+			fEntity = new Door(SECTORABSPOS(x), SECTORABSPOS(y), TestData::instance().waterMat);
 		}
+		_sectors[x + y * _width].entities.push_back(fEntity);
 	}
-}
-
-void Map::activateSectorAtAbsPos(float x, float y)
-{
-	int xIndex = (int)(x / Tile::SIZE);
-	int yIndex = (int)(y / Tile::SIZE);
-	activateSector(xIndex, yIndex);
-}
-
-void Map::addFixedEntity(int x, int y, FixedEntity* entity)
-{
-	if (entity)
-	{
-		if (inBounds(x, y))
-		{
-			_sectors[x + y * _width].entities.push_back(entity);
-		}
-		else {
-			Log::err("Removed fixed entity - Out of bounds!");
-			delete entity;
-		}
+	else {
+		Log::err("Could not create entity - Out of bounds!");
 	}
+
 }
 
 std::vector<Rect> Map::getSurroundingColliders(float x, float y) const
@@ -317,4 +321,33 @@ FixedEntity* Map::getEntityFromAbsPos(float x, float y)
 		}
 	}
 	return nullptr;
+}
+
+std::vector<FixedEntity*> Map::getEntitiesFromArea(const Vec2& pos, int radius)
+{
+	int xStartSector = SECTORINDEX(pos.x) - radius;
+	int yStartSector = SECTORINDEX(pos.y) - radius;
+	int xEndSector = SECTORINDEX(pos.x) + radius;
+	int yEndSector = SECTORINDEX(pos.y) + radius;
+
+	if (xStartSector < 0) xStartSector = 0;
+	if (yStartSector < 0) yStartSector = 0;
+	if (xEndSector >= _width) xEndSector = _width - 1;
+	if (yEndSector >= _height) yEndSector = _height - 1;
+
+	std::vector<FixedEntity*> entities;
+	entities.reserve(6);
+
+	for (int y = yStartSector; y <= yEndSector; ++y)
+	{
+		for (int x = xStartSector; x <= xEndSector; ++x)
+		{
+			Sector& sector = _sectors[x + y * _width];
+			for (unsigned int i = 0; i < sector.entities.size(); ++i)
+			{
+				entities.push_back(sector.entities[i]);
+			}
+		}
+	}
+	return entities;
 }

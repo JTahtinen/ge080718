@@ -166,6 +166,7 @@
     <ClCompile Include="testdata.cpp" />
     <ClCompile Include="tile.cpp" />
     <ClCompile Include="uicomponent.cpp" />
+    <ClCompile Include="usable.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="vec2.cpp" />
     <ClCompile Include="window.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="rendertarget.h" />
+    <ClInclude Include="sfx.h" />
     <ClInclude Include="softwarerenderer.h" />
     <ClInclude Include="softwarewindow.h" />
     <ClInclude Include="state.h" />

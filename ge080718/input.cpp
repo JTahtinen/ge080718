@@ -40,6 +40,7 @@ Input::Input()
 	addKey(SDLK_x);
 	addKey(SDLK_y);
 	addKey(SDLK_z);
+	addKey(SDLK_TAB);
 }
 
 void Input::update()

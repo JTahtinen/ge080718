@@ -4,9 +4,8 @@
 class Door : public FixedEntity
 {
 public:
-	Door(const Material* material, bool open);
-	Door(const Material* material);
-	virtual void use() override;
-	virtual void target() override;
+	Door(float x, float y, const Material* material, bool open);
+	Door(float x, float y, const Material* material);
+	virtual void use(Actor* actor) override;
 	bool isOpen() const;
 };

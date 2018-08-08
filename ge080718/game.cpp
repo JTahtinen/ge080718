@@ -8,7 +8,7 @@ Game::Game(const Window* win)
 {
 	Light::loadAssets();
 	GraphicsPool* surfaces = TestData::instance().surfaces;
-	Player* player = new Player(32.0f, 32.0f, TestData::instance().dudeMat);
+	Player* player = new Player(250, 200, TestData::instance().dudeMat);
 	_gameData.setPlayer(player);
 	//_gameData.setMap(Map::createDefaultMap());
 	_gameData.setMap(Map::loadMap("map.png"));
