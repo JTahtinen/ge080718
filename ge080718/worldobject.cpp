@@ -23,7 +23,6 @@ WorldObject::WorldObject(const Material* sprite)
 {
 }
 
-
 void WorldObject::update(Game* game)
 {
 	const GameData& gameData = game->getGameData();
@@ -36,15 +35,10 @@ void WorldObject::update(Game* game)
 	}
 	collisionCheck(map);
 	std::vector<Actor*> actors = gameData.actors;
-	for (unsigned int i = 0; i < actors.size(); ++i)
+	for (Actor* actor : actors)
 	{
-		Actor* actor = actors[i];
 		if (actor == this) continue;
-		
-		if (collisionCheck(*actor))
-		{
-			//Log::msg("Collision!");
-		}
+		collisionCheck(*actor);
 	}
 	_pos += _vel;
 	if (_vel.length() != 0.0f)
@@ -61,8 +55,6 @@ void WorldObject::render(GraphicsComponent* target, const Camera* camera) const
 		Rect dimensions = { _pos.x, _pos.y, _pos.x + 32, _pos.y + 32};
 		const Vec2& camCorr = camera->getCameraCorrection();
 		globals::renderer->renderMaterial(_sprite, dimensions, (int)camCorr.x, (int)camCorr.y, target);
-		//target->blit((int)(_pos.x - 16 + camCorr.x), (int)(_pos.y - 16 + camCorr.y),
-		//	(int)(_pos.x + 16 + camCorr.x), (int)(_pos.y + 16 + camCorr.y), *_sprite);
 	}
 }
 
@@ -124,9 +116,9 @@ bool WorldObject::collisionCheck(const Map* map)
 	bool collided = false;
 	Vec2 nextPos = _pos + _vel;
 	const std::vector<Rect> colliders = map->getSurroundingColliders(_pos.x, _pos.y);
-	for (unsigned int i = 0; i < colliders.size(); ++i)
+	for (const Rect& collider : colliders)
 	{
-		if (collisionCheck(colliders[i]))
+		if (collisionCheck(collider))
 		{
 			collided = true;
 		}

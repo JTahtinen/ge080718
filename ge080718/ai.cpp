@@ -26,21 +26,21 @@ void AI::update(NPC* npc) const
 				bool suitableHostiles = false;
 				const Vec2& pos = npc->getPos();
 				float dist;
-				for (unsigned int i = 0; i < numHostiles; ++i)
+				for (const Actor* hostile : hostiles)
 				{
-					float nextDist = math::distance(pos, hostiles[i]->getPos());
+					float nextDist = math::distance(pos, hostile->getPos());
 					if (nextDist > 40.0f)
 					{
 						if (!suitableHostiles)
 						{
-							state.setTarget(hostiles[i]);
+							state.setTarget(hostile);
 							suitableHostiles = true;
 						}
 						else 
 						{
 							if (nextDist < dist)
 							{
-								state.setTarget(hostiles[i]);
+								state.setTarget(hostile);
 							}
 						}
 						dist = nextDist;

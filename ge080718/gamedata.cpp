@@ -18,12 +18,11 @@ GameData::~GameData()
 {
 	delete map;
 	map = nullptr;
-	unsigned int i;
-	for (i = 0; i < entities.size(); ++i)
+	for (Entity* entity : entities)
 	{
-		delete entities[i];
-		entities[i] = nullptr;
+		delete entity;
 	}
+	entities.clear();
 }
 
 void GameData::setCamera(Camera* camera)

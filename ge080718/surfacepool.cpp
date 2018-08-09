@@ -8,11 +8,11 @@ GraphicsPool::GraphicsPool()
 
 GraphicsPool::~GraphicsPool()
 {
-	for (unsigned int i = 0; i < _components.size(); ++i)
+	for (GraphicsComponent* component : _components)
 	{
-		delete _components[i];
-		_components[i] = nullptr;
+		delete component;
 	}
+	_components.clear();
 }
 
 int GraphicsPool::addComponent(GraphicsComponent* component)

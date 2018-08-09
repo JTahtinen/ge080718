@@ -29,9 +29,9 @@ Map::~Map()
 	for (int i = 0; i < _width * _height; ++i)
 	{
 		Sector* sector = &_sectors[i];
-		for (unsigned int j = 0; j < sector->entities.size(); ++j)
+		for (FixedEntity* entity : sector->entities)
 		{
-			delete sector->entities[j];
+			delete entity;
 		}
 		sector->entities.clear();
 	}
@@ -95,9 +95,7 @@ void Map::render(GraphicsComponent* target, const Camera* camera) const
 	{
 		for (int x = xStart; x < xEnd; ++x)
 		{
-			
 			renderSector(x, y, (int)camCorr.x, (int)camCorr.y, target);
-			//_tiles[x + y * _width]->render(xStart, yStart, xEnd, yEnd, (int)camCorr.x, (int)camCorr.y, target);
 		}
 	}
 }

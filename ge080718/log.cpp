@@ -31,17 +31,17 @@ void Log::logAndPrintError(const std::string& error)
 
 void Log::printMessages() const
 {
-	for (unsigned int i = 0; i < _messages.size(); ++i)
+	for (const std::string& message : _messages)
 	{
-		Log::msg(_messages[i]);
+		Log::msg(message);
 	}
 }
 
 void Log::printErrors() const
 {
-	for (unsigned int i = 0; i < _errors.size(); ++i)
+	for (const std::string& error : _errors)
 	{
-		Log::err(_errors[i]);
+		Log::err(error);
 	}
 }
 
@@ -49,7 +49,7 @@ void Log::printLastMessage() const
 {
 	if (!_messages.empty())
 	{
-		Log::msg(_messages[_messages.size() - 1]);
+		Log::msg(_messages.back());
 	}
 }
 
@@ -57,7 +57,7 @@ void Log::printLastError() const
 {
 	if (!_errors.empty())
 	{
-		Log::err(_errors[_errors.size() - 1]);
+		Log::err(_errors.back());
 	}
 }
 

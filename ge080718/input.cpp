@@ -122,11 +122,11 @@ bool Input::poll(SDL_Keycode key) const
 
 void Input::addKey(SDL_Keycode key)
 {
-	for (unsigned int i = 0; i < _keys.size(); ++i)
+	for (SDL_Keycode existingKey : _keys)
 	{
-		if (_keys[i] == key)
+		if (existingKey == key)
 		{
-			Log::warning("Key already added!");
+			Log::err("Key already added!");
 			return;
 		}
 	}

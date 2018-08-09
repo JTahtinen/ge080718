@@ -26,9 +26,8 @@ void SoftwareRenderer::renderMaterial(const Material* material, const Rect& dime
 
 	util::fillBuffer(lightBuffer, width, height, _ambientLight);
 	Vec2 screenPos = Vec2(dimensions.x1, dimensions.y1);
-	for (unsigned int i = 0; i < _renderableLights.size(); ++i)
+	for (const Light* light : _renderableLights)
 	{
-		const Light* light = _renderableLights[i];
 		Vec2 topLeft(dimensions.x1, dimensions.y1);
 		Vec2 topRight(dimensions.x2, dimensions.y1);
 		Vec2 bottomLeft(dimensions.x1, dimensions.y2);
@@ -38,7 +37,7 @@ void SoftwareRenderer::renderMaterial(const Material* material, const Rect& dime
 			|| light->isInRadiusOf(bottomLeft)
 			|| light->isInRadiusOf(bottomRight))
 		{
-			_renderableLights[i]->render(lightBuffer, width, height, screenPos);
+			light->render(lightBuffer, width, height, screenPos);
 		}
 	}
 	util::modifyBuffer(lightBuffer, width, height, material->specular);

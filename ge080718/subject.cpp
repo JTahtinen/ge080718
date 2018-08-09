@@ -16,9 +16,9 @@ void Subject::notify(const Entity* entity, const Message message) const
 
 void Subject::addObserver(Observer* observer)
 {
-	for (unsigned int i = 0; i < _observers.size(); ++i)
+	for (Observer* currentObserver : _observers)
 	{
-		if (_observers[i] == observer)
+		if (currentObserver == observer)
 		{
 			Log::err("Observer already present!");
 			return;
@@ -29,9 +29,9 @@ void Subject::addObserver(Observer* observer)
 
 void Subject::removeObserver(Observer* observer)
 {
-	for (unsigned int i = 0; i < _observers.size(); ++i)
+	for (Observer* currentObserver : _observers)
 	{
-		if (_observers[i] == observer)
+		if (currentObserver == observer)
 		{
 			//TODO: erase
 			return;

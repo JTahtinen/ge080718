@@ -84,7 +84,6 @@ const GameData& Game::getGameData() const
 	return _gameData;
 }
 
-
 void Game::updateEntities()
 {
 	updateEntities(_gameData.entities);
@@ -92,8 +91,8 @@ void Game::updateEntities()
 
 void Game::updateEntities(std::vector<Entity*>& entities)
 {
-	for (unsigned int i = 0; i < entities.size(); ++i)
+	for (Entity* entity : entities)
 	{
-		entities[i]->update(this);
+		entity->update(this);
 	}
 }

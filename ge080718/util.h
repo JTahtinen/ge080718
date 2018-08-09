@@ -7,21 +7,18 @@
 namespace util
 {
 	template <typename T>
-	inline void clearBuffer(T* buffer, int width, int height)
-	{
-		for (int i = 0; i < width * height; ++i)
-		{
-			buffer[i] = 0;
-		}
-	}
-
-	template <typename T>
 	inline void fillBuffer(T* buffer, int width, int height, T value)
 	{
 		for (int i = 0; i < width * height; ++i)
 		{
 			buffer[i] = value;
 		}
+	}
+
+	template <typename T>
+	inline void clearBuffer(T* buffer, int width, int height)
+	{
+		fillBuffer(buffer, width, height, 0);
 	}
 
 	template <typename T>
@@ -38,9 +35,9 @@ namespace util
 	{
 		if (object)
 		{
-			for (unsigned int i = 0; i < vector.size(); ++i)
+			for (T* currentObj : vector)
 			{
-				if (vector[i] == object)
+				if (currentObj == object)
 				{
 					Log::err("Object already in vector!");
 					return;

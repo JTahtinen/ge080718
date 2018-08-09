@@ -1,11 +1,4 @@
-﻿  gameview.cpp
+﻿  worldobject.cpp
   game.cpp
   Generating Code...
-  Skipping... (no relevant changes detected)
-  worldobject.cpp
-  player.cpp
-  main.cpp
-  application.cpp
-  ai.cpp
-  actor.cpp
   ge080718.vcxproj -> C:\Users\Jaakko\source\repos\ge080718\Debug\ge080718.exe

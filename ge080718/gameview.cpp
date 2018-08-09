@@ -34,15 +34,15 @@ void GameView::update(GraphicsComponent* target)
 			const std::vector<Actor*>& actors = data.actors;
 			const Map* map = data.map;
 			const Camera* camera = data.camera;
-			for (unsigned int i = 0; i < lights.size(); ++i)
+			for (const Light* light : lights)
 			{
-				renderer->addRenderableLight(lights[i]);
+				renderer->addRenderableLight(light);
 			}
 			map->render(_graphicsComponent, camera);
 
-			for (unsigned int i = 0; i < actors.size(); ++i)
+			for (const Actor* actor : actors)
 			{
-				actors[i]->render(_graphicsComponent, camera);
+				actor->render(_graphicsComponent, camera);
 			}
 			renderer->clearRenderableLights();
 			break;
