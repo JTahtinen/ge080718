@@ -3,6 +3,7 @@
 #include "vec2.h"
 
 class Subject;
+class Game;
 
 class Entity
 {
@@ -17,7 +18,7 @@ public:
 	Entity(float x, float y);
 	Entity(const Vec2& pos);
 	Entity();
-	virtual void update() {};
+	virtual void update(Game* game) {};
 	const Vec2& getPos() const;
 	const Vec2& getVel() const;
 	unsigned int getId() const;

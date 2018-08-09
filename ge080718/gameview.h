@@ -13,12 +13,9 @@
 class GameView : public UIComponent, public Observer
 {
 	std::vector<Task>				_tasks;
-	const Map*						_map;
-	Camera*							_camera;
-	const std::vector<Actor*>&		_actors;
-	const std::vector<Light*>&		_lights;
+	const Game*						_game;
 public:
-	GameView(float xStart, float yStart, float xEnd, float yEnd, int width, int height, const GameData& gameData);
+	GameView(float xStart, float yStart, float xEnd, float yEnd, int width, int height, const Game* game);
 	~GameView();
 	void update(GraphicsComponent* target) override;
 	virtual void onNotify(const Entity* entity, const Message message) override;

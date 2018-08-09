@@ -23,7 +23,6 @@ void Player::update(Game* game)
 {
 	handleInput();
 	Actor::update(game);
-	_vel *= 0;
 }
 
 void Player::handleInput()

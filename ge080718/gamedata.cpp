@@ -5,6 +5,7 @@
 GameData::GameData()
 	: player(nullptr)
 	, map(nullptr)
+	, camera(nullptr)
 {
 	entities.reserve(100);
 	lights.reserve(50);
@@ -22,6 +23,15 @@ GameData::~GameData()
 	{
 		delete entities[i];
 		entities[i] = nullptr;
+	}
+}
+
+void GameData::setCamera(Camera* camera)
+{
+	if (camera)
+	{
+		this->camera = camera;
+		addEntity(camera);
 	}
 }
 

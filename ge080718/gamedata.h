@@ -5,11 +5,13 @@
 #include "player.h"
 #include "light.h"
 #include "npc.h"
+#include "camera.h"
 
-struct GameData
+class GameData
 {
-
+public:
 	Map*						map;
+	Camera*						camera;
 	std::vector<Entity*>		entities;
 	std::vector<WorldObject*>	worldObjects;
 	std::vector<Actor*>			actors;
@@ -20,6 +22,7 @@ struct GameData
 public:
 	GameData();
 	~GameData();
+	void setCamera(Camera* camera);
 	void setMap(Map* map);
 	void addEntity(Entity* entity);
 	void addWorldObject(WorldObject* worldObject);

@@ -23,4 +23,5 @@ public:
 private:
 	void addEntity(Entity* entity);
 	void updateEntities();
+	void updateEntities(std::vector<Entity*>& entities);
 };

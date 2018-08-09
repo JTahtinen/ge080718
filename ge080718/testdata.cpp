@@ -27,14 +27,13 @@ TestData::TestData()
 	GraphicsComponent* water = GraphicsComponent::loadGraphicsComponent("watertile.png");
 	waterSurface = surfaces->addComponent(water);
 
-
 	grassMat = new Material(grass, 2.0f, 1.0f);
 	waterMat = new Material(water, 5.0f, 5.0f);
 	nullMat = new Material(nullptr, 1.0f, 1.0f);
 	dudeMat = new Material(dude, 1.0f, 1.0f);
 
 	grassTile = new Tile(grassMat, false);
-	waterTile = new Tile(waterMat, false);
+	waterTile = new Tile(waterMat, true);
 	nullTile = new Tile(nullMat, true);
 }
 

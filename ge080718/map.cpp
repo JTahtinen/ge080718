@@ -253,12 +253,13 @@ void Map::addFixedEntity(int x, int y, FixedEntityType entity)
 std::vector<Rect> Map::getSurroundingColliders(float x, float y) const
 {
 	std::vector<Rect> rects;
-	rects.reserve(8);
+	rects.reserve(9);
 
 	const Sector* topLeft = getSectorAtAbsPos(x - 32, y - 32);
 	const Sector* topUp = getSectorAtAbsPos(x, y - 32);
 	const Sector* topRight = getSectorAtAbsPos(x + 32, y - 32);
 	const Sector* midLeft = getSectorAtAbsPos(x - 32, y);
+	const Sector* middle = getSectorAtAbsPos(x, y);
 	const Sector* midRight = getSectorAtAbsPos(x + 32, y);
 	const Sector* bottomLeft = getSectorAtAbsPos(x - 32, y + 32);
 	const Sector* bottomDown = getSectorAtAbsPos(x, y + 32);
@@ -268,6 +269,7 @@ std::vector<Rect> Map::getSurroundingColliders(float x, float y) const
 	if (sectorHasBarrier(topUp))			rects.emplace_back(getTilePosOf(x, y - 32));
 	if (sectorHasBarrier(topRight))			rects.emplace_back(getTilePosOf(x + 32, y - 32));
 	if (sectorHasBarrier(midLeft))			rects.emplace_back(getTilePosOf(x - 32, y));
+	if (sectorHasBarrier(middle))			rects.emplace_back(getTilePosOf(x, y));
 	if (sectorHasBarrier(midRight))			rects.emplace_back(getTilePosOf(x + 32, y));
 	if (sectorHasBarrier(bottomLeft))		rects.emplace_back(getTilePosOf(x - 32, y + 32));
 	if (sectorHasBarrier(bottomDown))		rects.emplace_back(getTilePosOf(x, y + 32));

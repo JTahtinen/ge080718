@@ -2,15 +2,13 @@
 #include "graphics.h"
 #include "renderer.h"
 #include "globals.h"
+#include "game.h"
 
-GameView::GameView(float xStart, float yStart, float xEnd, float yEnd, int width, int height, const GameData& gameData)
+GameView::GameView(float xStart, float yStart, float xEnd, float yEnd, int width, int height, const Game* game)
 	: UIComponent(xStart, yStart, xEnd, yEnd, width, height)
-	, _actors(gameData.actors)
-	, _lights(gameData.lights)
+	, _game(game)
 {
-	_map = gameData.map;
-	_camera = new Camera(_graphicsComponent, _map);
-	_camera->setTarget(gameData.player);
+	
 	_tasks.reserve(10);
 	_tasks.push_back(RENDER);
 	globals::renderer->setAmbientLight(0.3f);
@@ -18,8 +16,6 @@ GameView::GameView(float xStart, float yStart, float xEnd, float yEnd, int width
 
 GameView::~GameView()
 {
-	delete _camera;
-	_camera = nullptr;
 }
 
 void GameView::update(GraphicsComponent* target)
@@ -33,16 +29,20 @@ void GameView::update(GraphicsComponent* target)
 		{
 		case RENDER:
 			Renderer* renderer = globals::renderer;
-			_camera->update();
-			for (unsigned int i = 0; i < _lights.size(); ++i)
+			const GameData& data = _game->getGameData();
+			const std::vector<Light*>& lights = data.lights;
+			const std::vector<Actor*>& actors = data.actors;
+			const Map* map = data.map;
+			const Camera* camera = data.camera;
+			for (unsigned int i = 0; i < lights.size(); ++i)
 			{
-				renderer->addRenderableLight(_lights[i]);
+				renderer->addRenderableLight(lights[i]);
 			}
-			_map->render(_graphicsComponent, _camera);
+			map->render(_graphicsComponent, camera);
 
-			for (unsigned int i = 0; i < _actors.size(); ++i)
+			for (unsigned int i = 0; i < actors.size(); ++i)
 			{
-				_actors[i]->render(_graphicsComponent, _camera);
+				actors[i]->render(_graphicsComponent, camera);
 			}
 			renderer->clearRenderableLights();
 			break;

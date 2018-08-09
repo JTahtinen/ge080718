@@ -2,12 +2,14 @@
 #include "worldobject.h"
 #include "map.h"
 
-Camera::Camera(const WorldObject* target, const GraphicsComponent* view, const Map* map)
-	: _target(target)
-	, _view(view)
+Camera::Camera(const WorldObject* target, int targetWidth, int targetHeight, const Map* map)
+	: Entity(target->getPos())
+	, _target(target)
+	, _targetWidth(targetWidth)
+	, _targetHeight(targetHeight)
 {
-	int halfViewWidth = _view->getWidth() / 2;
-	int halfViewHeight = _view->getHeight() / 2;
+	int halfViewWidth = targetWidth / 2;
+	int halfViewHeight = targetHeight / 2;
 	int mapWidth = map->getAbsWidth();
 	int mapHeight = map->getAbsHeight();
 	_bounds = Rect(
@@ -17,8 +19,8 @@ Camera::Camera(const WorldObject* target, const GraphicsComponent* view, const M
 		(float)(mapHeight - halfViewHeight));
 }
 
-Camera::Camera(const GraphicsComponent* view, const Map* map)
-	: Camera(nullptr, view, map)
+Camera::Camera(int targetWidth, int targetHeight, const Map* map)
+	: Camera(nullptr, targetWidth, targetHeight, map)
 {
 }
 
@@ -27,7 +29,7 @@ void Camera::setTarget(const WorldObject* target)
 	_target = target;
 }
 
-void Camera::update()
+void Camera::update(Game* game)
 {
 	if (_target)
 	{
@@ -41,7 +43,7 @@ void Camera::update()
 
 Vec2 Camera::getCameraCorrection() const
 {
-	return Vec2(_view->getWidth() / 2.0f - _pos.x, _view->getHeight() / 2.0f - _pos.y);
+	return Vec2(_targetWidth / 2.0f - _pos.x, _targetHeight / 2.0f - _pos.y);
 }
 
 Vec2 Camera::translate(const Vec2& pos) const

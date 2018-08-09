@@ -13,7 +13,8 @@ Game::Game(const Window* win)
 	_gameData.setPlayer(player);
 	//_gameData.setMap(Map::createDefaultMap());
 	_gameData.setMap(Map::loadMap("map.png"));
-	_gameView = new GameView(-0.8f, -0.8f, 0.8f, 0.8f, 400, 300, _gameData);
+	_gameData.setCamera(new Camera(player, 400, 300, _gameData.map));
+	_gameView = new GameView(-0.8f, -0.8f, 0.8f, 0.8f, 400, 300, this);
 	for (unsigned int i = 0; i < 10; ++i)
 	{
 		addNPC(new NPC(40.0f + i * 40.0f, 40.0f + i * 40.0f, TestData::instance().dudeMat));
@@ -86,23 +87,13 @@ const GameData& Game::getGameData() const
 
 void Game::updateEntities()
 {
-	std::vector<WorldObject*>& worldObjects = _gameData.worldObjects;
-	std::vector<Actor*>& actors = _gameData.actors;
-	std::vector<Light*>& lights = _gameData.lights;
+	updateEntities(_gameData.entities);
+}
 
-	unsigned int i;
-	for (i = 0; i < worldObjects.size(); ++i)
+void Game::updateEntities(std::vector<Entity*>& entities)
+{
+	for (unsigned int i = 0; i < entities.size(); ++i)
 	{
-		worldObjects[i]->update(this);
-	}
-	
-	for (i = 0; i < actors.size(); ++i)
-	{
-		actors[i]->update(this);
-	}
-
-	for (i = 0; i < lights.size(); ++i)
-	{
-		lights[i]->update();
+		entities[i]->update(this);
 	}
 }

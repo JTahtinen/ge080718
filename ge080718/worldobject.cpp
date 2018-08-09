@@ -51,7 +51,7 @@ void WorldObject::update(Game* game)
 	{
 		subject->notify(this, ENTITY_MOVED);
 	}
-	Entity::update();
+	Entity::update(game);
 }
 
 void WorldObject::render(GraphicsComponent* target, const Camera* camera) const

@@ -13,12 +13,23 @@ struct ActorWorldData
 	std::vector<Entity*>			nearbyEntities;
 };
 
+class ActorTaskList
+{
+	std::vector<ActorTask> _tasks;
+public:
+	ActorTaskList() { _tasks.reserve(10); }
+	void push(ActorTask task);
+	ActorTask pop();
+	void clear();
+	unsigned int getSize() const;
+};
+
 class Actor : public WorldObject
 {
-	friend class AI;
 protected:
 	ActorWorldData				_worldData;
-	std::vector<ActorTask>		_tasks;
+	ActorTaskList				_movementTasks;
+	ActorTaskList				_actionTasks;
 	Usable*						_target;
 	float						_speed;
 public:
@@ -30,7 +41,8 @@ public:
 private:
 	void selectClosestTarget();
 	void selectNextTarget();
-	void handleTasks();
+	void handleMovementTasks();
+	void handleActionTasks();
 	void targetEntity(Usable* entity);
 	void updateWorldData(Game* game);
 protected:
@@ -40,6 +52,7 @@ protected:
 
 enum ActorTask
 {
+	NULL_TASK,
 	MOVE_UP,
 	MOVE_DOWN,
 	MOVE_LEFT,

@@ -4,21 +4,25 @@
 
 enum NPC_Mood
 {
-	IDLE = 0, ACTIVE
+	IDLE = 0, 
+	ACTIVE
 };
 
 enum NPC_Task
 {
-	NO_TASK = 0, ATTACK
+	NO_TASK = 0, 
+	ATTACK
 };
 
-struct NPCState
+class NPCState
 {
+public:
 	NPC_Mood							mood;
 	const Entity*						target;
 	std::vector<const Actor*>			hostiles;
 	NPC_Task							task;
 
+public:
 	NPCState();
 	void addHostile(const Actor* actor);
 	void setTarget(const Entity* target);
@@ -32,8 +36,8 @@ class AI;
 class NPC : public Actor
 {
 	friend class AI;
-	NPCState		_state;
-	AI*				_ai;
+	NPCState						_state;
+	AI*								_ai;
 public:
 	NPC(float x, float y, const Material* sprite, AI* ai);
 	NPC(float x, float y, const Material* sprite);
