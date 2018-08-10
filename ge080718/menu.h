@@ -5,5 +5,5 @@ class Menu : public State
 {
 public:
 	Menu(const Window* win);
-	virtual void update(Window* win);
+	virtual void update(Window* win, float frameTime) override;
 };

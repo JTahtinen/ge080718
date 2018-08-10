@@ -11,5 +11,5 @@ protected:
 public:
 	State(const Window* win);
 	~State();
-	virtual void update(Window* win) = 0;
+	virtual void update(Window* win, float frameTime) = 0;
 };

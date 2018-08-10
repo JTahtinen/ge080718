@@ -5,7 +5,7 @@
 
 Actor::Actor(float x, float y, const Material* sprite)
 	: _target(nullptr)
-	, _speed(5.0f)
+	, _speed(300.0f)
 	, WorldObject(x, y, sprite)
 {
 }

@@ -5,7 +5,7 @@ Menu::Menu(const Window* win)
 {
 }
 
-void Menu::update(Window* win)
+void Menu::update(Window* win, float frameTime)
 {
 	_graphics->clear(0xff0000);
 	win->update(_graphics);

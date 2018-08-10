@@ -2,6 +2,7 @@
 #include <iostream>
 #include "application.h"
 #include "globals.h"
+#include "timer.h"
 #include "testdata.h"
 
 int main(int argc, char** argv)

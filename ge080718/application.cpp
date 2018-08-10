@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "softwarerenderer.h"
 #include "glrenderer.h"
+#include "timer.h"
 
 Application::Application(int width, int height, const std::string& title, RendererType renderer)
 {
@@ -51,10 +52,27 @@ Application::~Application()
 void Application::run()
 {
 	_running = true;
+	Timer fpsTimer;
+	fpsTimer.start();
+	Timer frame;
+	frame.start();
+	float frameTime = 0;
+	unsigned int frames = 0;
 	while (_running)
 	{
 		handleInput();
-		_states[_currentState]->update(_win);
+		_states[_currentState]->update(_win, frameTime);
+		frameTime = frame.getElapsedTime();
+		frame.reset();
+		++frames;
+		float elapsedTime = fpsTimer.getElapsedTime();
+		if (elapsedTime >= 1.0f)
+		{
+			Log::msg("FPS: " + std::to_string(frames));
+			fpsTimer.reset();
+			frames = 0;
+
+		}
 	}
 }
 

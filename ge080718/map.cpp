@@ -3,14 +3,13 @@
 #include "globals.h"
 #include "door.h"
 #include "worldObject.h"
+#include "light.h"
 
 #define SECTORINDEX( x ) ((int)(x) / Tile::SIZE)
 #define SECTORABSPOS( x ) ((float)(x) * Tile::SIZE)
 
 #define WATER 0xffff0000
 #define GRASS 0xff00ff00
-
-
 
 Map::Map(int width, int height)
 	: _width(width)
@@ -22,6 +21,10 @@ Map::Map(int width, int height)
 		_sectors.push_back(Sector());
 		_sectors[i].tile = TestData::instance().nullTile;
 	}
+	_lightMap = new float[width * height];
+
+	Light light(40, 40);
+	light.render(_lightMap, width, height, Vec2(0,0));
 }
 
 Map::~Map()
@@ -35,6 +38,8 @@ Map::~Map()
 		}
 		sector->entities.clear();
 	}
+	delete _lightMap;
+	_lightMap = nullptr;
 }
 
 void Map::setTile(int x, int y, const Tile* tile)

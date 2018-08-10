@@ -24,6 +24,7 @@ class Map
 	std::vector<Sector>			_sectors;
 	int							_width;
 	int							_height;
+	float*						_lightMap;
 public:
 	~Map();
 	void setTile(int x, int y, const Tile* tile);

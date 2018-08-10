@@ -3,6 +3,7 @@
 #include "material.h"
 #include "camera.h"
 #include "light.h"
+#include "physics.h"
 #include <vector>
 
 class Game;
@@ -16,10 +17,10 @@ public:
 	WorldObject(float x, float y, const Material* sprite);
 	WorldObject(const Vec2& pos, const Material* sprite);
 	WorldObject(const Material *sprite);
-	virtual void update(Game* game);
+	virtual void update(Game* game) override;
 	virtual void render(GraphicsComponent* target, const Camera* camera) const;
 	const Vec2& getPos() const;
-	bool collisionCheck(const Rect& collider);
+	bool collisionCheck(const Collider& collider);
 	bool collisionCheck(const Entity& other);
 	bool collisionCheck(const Map* map);
 private:

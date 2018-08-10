@@ -18,9 +18,12 @@ public:
 	Entity(float x, float y);
 	Entity(const Vec2& pos);
 	Entity();
-	virtual void update(Game* game) {};
+	virtual void update(Game* game);
 	const Vec2& getPos() const;
 	const Vec2& getVel() const;
+	Vec2 nextPos() const;
 	unsigned int getId() const;
 	bool isMoving() const;
+private:
+	static unsigned int nextId();
 };

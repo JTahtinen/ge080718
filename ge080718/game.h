@@ -13,15 +13,16 @@ class Game : public State
 	GameView*				_gameView;
 	GameData				_gameData;
 public:
+	static float			frameTime;
+public:
 	Game(const Window* win);
 	~Game();
 	void handleInput();
 	void addLight(Light* light);
 	void addNPC(NPC* npc);
-	virtual void update(Window* win) override;
+	virtual void update(Window* win, float frameTime) override;
 	const GameData& getGameData() const;
 private:
-	void addEntity(Entity* entity);
 	void updateEntities();
 	void updateEntities(std::vector<Entity*>& entities);
 };

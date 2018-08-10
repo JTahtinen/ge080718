@@ -33,6 +33,7 @@ void WorldObject::update(Game* game)
 	{
 		_vel = Physics::instance().calcFriction(_walkMaterial->friction, _vel);
 	}
+
 	collisionCheck(map);
 	std::vector<Actor*> actors = gameData.actors;
 	for (Actor* actor : actors)
@@ -40,11 +41,7 @@ void WorldObject::update(Game* game)
 		if (actor == this) continue;
 		collisionCheck(*actor);
 	}
-	_pos += _vel;
-	if (_vel.length() != 0.0f)
-	{
-		subject->notify(this, ENTITY_MOVED);
-	}
+
 	Entity::update(game);
 }
 
@@ -63,13 +60,13 @@ const Vec2& WorldObject::getPos() const
 	return _pos;
 }
 
-bool WorldObject::collisionCheck(const Rect& collider)
+bool WorldObject::collisionCheck(const Collider& collider)
 {
-	Rect myCollider =
-		Rect(_pos.x - 15.0f, _pos.y - 15.0f,
+	Collider myCollider =
+		Collider(_pos.x - 15.0f, _pos.y - 15.0f,
 			_pos.x + 15.0f, _pos.y + 15.0f);
 	
-	Collision collision = Physics::instance().collision(myCollider, _vel, collider);
+	Collision collision = Physics::instance().collision(myCollider, _vel * Game::frameTime, collider);
 
 	if (collision.xCollision)
 	{
@@ -103,8 +100,8 @@ bool WorldObject::collisionCheck(const Entity& other)
 {
 	const Vec2& otherPos = other.getPos();
 	
-	Rect otherCollider =
-		Rect(otherPos.x - 16.0f, otherPos.y - 16.0f, 
+	Collider otherCollider =
+		Collider(otherPos.x - 16.0f, otherPos.y - 16.0f,
 			otherPos.x + 16.0f, otherPos.y + 16.0f);
 		
 	return (collisionCheck(otherCollider));
@@ -115,8 +112,8 @@ bool WorldObject::collisionCheck(const Map* map)
 	if (!this->isMoving()) return false;
 	bool collided = false;
 	Vec2 nextPos = _pos + _vel;
-	const std::vector<Rect> colliders = map->getSurroundingColliders(_pos.x, _pos.y);
-	for (const Rect& collider : colliders)
+	const std::vector<Collider> colliders = map->getSurroundingColliders(_pos.x, _pos.y);
+	for (const Collider& collider : colliders)
 	{
 		if (collisionCheck(collider))
 		{

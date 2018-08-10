@@ -4,6 +4,8 @@
 #include "globals.h"
 #include "ai.h"
 
+float Game::frameTime = 0;
+
 Game::Game(const Window* win)
 	: State(win)
 {
@@ -49,30 +51,22 @@ void Game::handleInput()
 	}
 }
 
-void Game::addEntity(Entity* entity)
-{
-	//entity->subject->addObserver(_gameView);
-}
-
 void Game::addLight(Light* light)
 {
 	_gameData.addLight(light);
-	addEntity(light);
 	_subject.notify(light, ENTITY_ADDED);
-	Log::msg("Light added!");
-
 }
 
 void Game::addNPC(NPC* npc)
 {
 	_gameData.addNPC(npc);
-	addEntity(npc);
 	_subject.notify(npc, ENTITY_ADDED);
-	Log::msg("NPC added!");
 }
 
-void Game::update(Window* win)
+void Game::update(Window* win, float frameTime)
 {
+	Game::frameTime = frameTime;
+	//Log::msg("FrameTime: " + std::to_string(frameTime));
 	handleInput();
 	updateEntities();
 	_gameView->update(_graphics);
